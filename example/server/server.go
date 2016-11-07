@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"scaling-zk"
+	"github.com/YoungPioneers/discover-zk"
 	"time"
 )
 
