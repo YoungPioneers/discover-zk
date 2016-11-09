@@ -8,23 +8,30 @@ import (
 )
 
 var (
-	// defaultNodesTXT 默认使用内网dns的TXT记录获取zk节点列表
-	defaultNodesTXT = "zookeepers.y.cn"
+	// defaultAddrsTXT 默认使用内网dns的TXT记录获取zk节点列表
+	defaultAddrsTXT = "zookeepers.y.cn"
 )
 
-func DefaultNodesTXT() string {
-	return defaultNodesTXT
+func DefaultAddrsTXT() string {
+	return defaultAddrsTXT
 }
 
-func SetDefaultNodesTXT(txt string) {
-	defaultNodesTXT = txt
+func SetDefaultAddrsTXT(txt string) {
+	defaultAddrsTXT = txt
 }
 
-func defaultNodes() (nodes []string, err error) {
-	nodes, err = net.LookupTXT(defaultNodesTXT)
+func DefaultAddrs() (nodes []string, err error) {
+	nodes, err = net.LookupTXT(defaultAddrsTXT)
 	if nil != err {
 		return nil, err
 	}
 
 	return nodes, nil
+}
+
+type silent struct {
+}
+
+func (silent *silent) Printf(string, ...interface{}) {
+	return
 }

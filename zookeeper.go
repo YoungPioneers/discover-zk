@@ -25,18 +25,18 @@ var (
 // ZKClient zookeeper client
 type ZKClient struct {
 	path  string
-	nodes []string
+	addrs []string
 	conn  *zk.Conn
 
 	closed bool
 	lock   *sync.RWMutex
 }
 
-// NewClient 初始化, path为server&&client共用路径,nodes为zookeepers ip
-func NewClient(path string, nodes ...string) (client *ZKClient, err error) {
-	if len(nodes) < 1 {
+// NewClient 初始化, path为server&&client共用路径,addrs为zookeepers ip
+func NewClient(path string, addrs ...string) (client *ZKClient, err error) {
+	if len(addrs) < 1 {
 		// 通过TXT记录获取默认节点列表
-		nodes, err = defaultNodes()
+		addrs, err = DefaultAddrs()
 		if nil != err {
 			return nil, err
 		}
@@ -47,7 +47,7 @@ func NewClient(path string, nodes ...string) (client *ZKClient, err error) {
 	client.closed = false
 	client.lock = new(sync.RWMutex)
 
-	err = client.connect(nodes)
+	err = client.connect(addrs)
 	if nil != err {
 		return nil, err
 	}
@@ -56,17 +56,18 @@ func NewClient(path string, nodes ...string) (client *ZKClient, err error) {
 }
 
 // connect 链接节点
-func (zkClient *ZKClient) connect(nodes []string) (err error) {
-	if len(nodes) < 1 {
+func (zkClient *ZKClient) connect(addrs []string) (err error) {
+	if len(addrs) < 1 {
 		return ErrNodesNeeded
 	}
 
 	// 链接节点
-	zkClient.conn, _, err = zk.Connect(nodes, time.Second)
+	zkClient.conn, _, err = zk.Connect(addrs, time.Second)
+	zkClient.conn.SetLogger(new(silent))
 	if nil != err {
 		return err
 	}
-	zkClient.nodes = nodes
+	zkClient.addrs = addrs
 
 	return nil
 }
