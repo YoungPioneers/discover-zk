@@ -157,12 +157,14 @@ func (zkClient *ZKClient) Mirror() (snapshots chan map[string][]byte, errors cha
 	errors = make(chan error)
 	go func() {
 		for {
+			// 变化后，获取所有节点名
 			nodes, _, events, err := zkClient.conn.ChildrenW(zkClient.path)
 			if nil != err {
 				errors <- err
 				continue
 			}
 
+			// 获取节点的值
 			snapshot, err := zkClient.getNodeValues(nodes)
 			if nil != err {
 				errors <- err
@@ -181,7 +183,7 @@ func (zkClient *ZKClient) Mirror() (snapshots chan map[string][]byte, errors cha
 	return snapshots, errors
 }
 
-// getNodeValues获取节点信息
+// getNodeValues 获取节点信息
 func (zkClient *ZKClient) getNodeValues(nodes []string) (nodeValues map[string][]byte, err error) {
 	nodeValues = make(map[string][]byte)
 	for _, node := range nodes {
