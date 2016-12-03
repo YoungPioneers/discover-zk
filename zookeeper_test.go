@@ -24,4 +24,9 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Logf("nodes: %+v", nodes)
+
+	err = zkClient.Update([]byte("{'weight':10, 'work':false}"))
+	if nil != err {
+		t.Errorf("update node failed. err: %s", err.Error())
+	}
 }
