@@ -205,7 +205,13 @@ func (zkClient *ZKClient) Close() (err error) {
 		return ErrClosedInstance
 	}
 
-	zkClient.conn.Close()
+	dest := filepath.Join(zkClient.path, zkClient.name)
+	err = zkClient.conn.Delete(dest, zkClient.getVersion())
+	if nil != err {
+		return err
+	}
+
+	defer zkClient.conn.Close()
 	zkClient.closed = true
 
 	return nil

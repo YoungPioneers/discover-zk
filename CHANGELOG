@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - 添加Update接口，供Register后更新节点数据
+- 在Close时删除节点
 
 ## [0.0.1] - 2016-11-07
 ### Added
