@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Released]
+## [0.0.3] - 2017-04-21
+### Added
+- 暴露Exists方法来检查自身存在性
+
 ## [0.0.2] - 2016-12-03
 ### Changed
 - 屏蔽zookeeper lib输出

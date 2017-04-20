@@ -111,6 +111,25 @@ func (zkClient *ZKClient) Register(name string, value []byte) (err error) {
 	return nil
 }
 
+// Exists 判断节点自己的存在性
+func (zkClient *ZKClient) Exists() (exists bool, err error) {
+	zkClient.lock.RLock()
+	defer zkClient.lock.RUnlock()
+
+	if zkClient.closed {
+		return false, ErrClosedInstance
+	}
+
+	path := filepath.Join(zkClient.path, zkClient.name)
+	exists, stat, err := zkClient.conn.Exists(path)
+	if nil != err {
+		return false, err
+	}
+	zkClient.setVersion(stat.Version)
+
+	return exists, nil
+}
+
 // Update 更新节点数据
 func (zkClient *ZKClient) Update(value []byte) (err error) {
 	zkClient.lock.RLock()
