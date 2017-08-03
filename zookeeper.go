@@ -63,7 +63,7 @@ func NewClient(path string, addrs ...string) (client *ZKClient, err error) {
 	return
 }
 
-// connect 链接节点
+// connect zookeeper节点
 func (zkClient *ZKClient) connect(addrs []string) (err error) {
 	if len(addrs) < 1 {
 		return ErrNodesNeeded
@@ -80,7 +80,7 @@ func (zkClient *ZKClient) connect(addrs []string) (err error) {
 	return nil
 }
 
-// Register 节点注册, value为自定义信息(权重，开关等)
+// Register 注册临时节点, value为自定义信息(权重，开关等)
 func (zkClient *ZKClient) Register(name string, value []byte) (err error) {
 	zkClient.lock.RLock()
 	defer zkClient.lock.RUnlock()
