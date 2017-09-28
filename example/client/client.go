@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	zkClient, err := zookeeper.NewClient("/example/nodes")
+	zkClient, err := zookeeper.NewClient("/example/nodes", "127.0.0.1:2181")
 	if nil != err {
 		fmt.Printf("zk client init failed. err: %s\n", err.Error())
 		return

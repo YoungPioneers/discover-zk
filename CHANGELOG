@@ -2,18 +2,22 @@
 All notable changes to this project will be documented in this file.
 
 ## [Released]
+## [0.0.4] - 2017-09-28
+### Changed
+- (Huang Junwei) Mirror能捕捉节点内容变化
+
 ## [0.0.3] - 2017-04-21
 ### Added
-- 暴露Exists方法来检查自身存在性
+- (Huang Junwei) 暴露Exists方法来检查自身存在性
 
 ## [0.0.2] - 2016-12-03
 ### Changed
-- 屏蔽zookeeper lib输出
+- (Huang Junwei) 屏蔽zookeeper lib输出
 
 ### Added
-- 添加Update接口，供Register后更新节点数据
-- 在Close时删除节点
+- (Huang Junwei) 添加Update接口，供Register后更新节点数据
+- (Huang Junwei) 在Close时删除节点
 
 ## [0.0.1] - 2016-11-07
 ### Added
-- 雏形发布
+- (Huang Junwei) 雏形发布

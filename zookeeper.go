@@ -36,6 +36,9 @@ type ZKClient struct {
 
 	closed bool
 	lock   *sync.RWMutex
+
+	// 当前快照
+	snapshot map[string][]byte
 }
 
 // NewClient 初始化, path为server&&client共用路径,addrs为zookeepers ip
@@ -203,11 +206,72 @@ func (zkClient *ZKClient) Mirror() (snapshots chan map[string][]byte, errors cha
 				continue
 			}
 
+			// 监听新增的节点
+			for name, _ := range snapshot {
+				if _, ok := zkClient.snapshot[name]; !ok {
+					go func(name string) {
+						nodeSnapshots, nodeErrors := zkClient.nodeMirror(name)
+					WatchLoop:
+						for {
+							select {
+							case <-nodeSnapshots:
+								// 重新获取整个mirror
+								nodes, stat, err := zkClient.conn.Children(zkClient.path)
+								if nil != err {
+									errors <- err
+									break WatchLoop
+								}
+								zkClient.setVersion(stat.Version)
+
+								nodeValues, err := zkClient.getNodeValues(nodes)
+								snapshots <- nodeValues
+								if nil != err {
+									errors <- err
+									break WatchLoop
+								}
+
+							case <-nodeErrors:
+								break WatchLoop
+
+							}
+						}
+					}(name)
+				}
+			}
+
+			zkClient.snapshot = snapshot
+
 			snapshots <- snapshot
 			event := <-events
 			if nil != event.Err {
 				errors <- err
 				return
+			}
+		}
+	}()
+
+	return snapshots, errors
+}
+
+// nodeMirror 监听指定节点的变化
+func (zkClient *ZKClient) nodeMirror(name string) (snapshots chan []byte, errors chan error) {
+	snapshots = make(chan []byte)
+	errors = make(chan error)
+	go func() {
+		for {
+			path := filepath.Join(zkClient.path, name)
+			node, stat, events, err := zkClient.conn.GetW(path)
+			if nil != err {
+				errors <- err
+				continue
+			}
+			zkClient.setVersion(stat.Version)
+
+			snapshots <- node
+			event := <-events
+			if nil != event.Err {
+				errors <- err
+				continue
 			}
 		}
 	}()
