@@ -1,7 +1,7 @@
 Introduction
 =======
 
-scaling-zk借助zookeeper实现服务发现。辅助在无proxy架构下实现自动扩容
+discover-zk借助zookeeper实现服务发现。辅助在无proxy架构下实现自动扩容
 
 Quick-start
 -----------------
@@ -12,7 +12,7 @@ package main
 
 import (
 	"fmt"
-	"scaling-zk"
+	"github.com/YoungPioneers/discover-zk"
 	"time"
 )
 
